@@ -119,5 +119,77 @@
 ---
 
 ## **p4_7**
+---
+
+---
 
 ![p4_7](/p4_7.png)
+
+---
+
+---
+_______________________________________________________________________________________________________
+Або замість  goit_csv_imports. використовувати   use goit_csv_imports
+
+
+-- p4_3
+use goit_csv_imports;
+SELECT *
+FROM orders
+INNER JOIN employees ON orders.employee_id = employees.employee_id
+WHERE employees.employee_id > 3 AND employees.employee_id <= 10;
+
+-- p4_4
+use goit_csv_imports;
+SELECT 
+    categories.name AS category_name,
+    COUNT(*) AS total_orders,
+    AVG(order_details.quantity) AS avg_quantity
+FROM orders
+INNER JOIN order_details ON orders.id = order_details.order_id
+INNER JOIN products ON order_details.product_id = products.id
+INNER JOIN categories ON products.category_id = categories.id
+GROUP BY categories.name;
+
+-- p4_5
+use goit_csv_imports;
+SELECT 
+    categories.name AS category_name,
+    COUNT(*) AS total_orders,
+    AVG(order_details.quantity) AS avg_quantity
+FROM orders
+INNER JOIN order_details ON orders.id = order_details.order_id
+INNER JOIN products ON order_details.product_id = products.id
+INNER JOIN categories ON products.category_id = categories.id
+GROUP BY categories.name
+HAVING avg_quantity > 21;
+
+-- p4_6
+use goit_csv_imports;
+SELECT 
+    categories.name AS category_name,
+    COUNT(*) AS total_orders,
+    AVG(order_details.quantity) AS avg_quantity
+FROM orders
+INNER JOIN order_details ON orders.id = order_details.order_id
+INNER JOIN products ON order_details.product_id = products.id
+INNER JOIN categories ON products.category_id = categories.id
+GROUP BY categories.name
+HAVING avg_quantity > 21
+ORDER BY total_orders DESC;
+
+-- p4_7
+use goit_csv_imports;
+SELECT 
+    categories.name AS category_name,
+    COUNT(*) AS total_orders,
+    AVG(order_details.quantity) AS avg_quantity
+FROM orders
+INNER JOIN order_details ON orders.id = order_details.order_id
+INNER JOIN products ON order_details.product_id = products.id
+INNER JOIN categories ON products.category_id = categories.id
+GROUP BY categories.name
+HAVING avg_quantity > 21
+ORDER BY total_orders DESC
+LIMIT 4 OFFSET 1;
+
