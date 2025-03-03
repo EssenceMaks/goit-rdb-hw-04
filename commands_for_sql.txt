@@ -1,0 +1,210 @@
+
+-- p1_a
+CREATE SCHEMA goit_csv_imports;
+
+-- p1_b
+CREATE TABLE goit_csv_imports.authors (
+    author_id INT AUTO_INCREMENT PRIMARY KEY,
+    author_name VARCHAR(255) NOT NULL
+);
+
+-- p1_c
+CREATE TABLE goit_csv_imports.genres (
+    genre_id INT AUTO_INCREMENT PRIMARY KEY,
+    genre_name VARCHAR(255) NOT NULL
+);
+
+-- p1_d
+CREATE TABLE goit_csv_imports.books (
+    book_id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    publication_year YEAR NOT NULL,
+    author_id INT,
+    genre_id INT,
+    FOREIGN KEY (author_id) REFERENCES goit_csv_imports.authors(author_id),
+    FOREIGN KEY (genre_id) REFERENCES goit_csv_imports.genres(genre_id)
+);
+
+-- p1_e
+CREATE TABLE goit_csv_imports.users (
+    user_id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(100) NOT NULL,
+    email VARCHAR(255) NOT NULL
+);
+
+-- p1_f
+CREATE TABLE goit_csv_imports.borrowed_books (
+    borrow_id INT AUTO_INCREMENT PRIMARY KEY,
+    book_id INT,
+    user_id INT,
+    borrow_date DATE NOT NULL,
+    return_date DATE,
+    FOREIGN KEY (book_id) REFERENCES goit_csv_imports.books(book_id),
+    FOREIGN KEY (user_id) REFERENCES goit_csv_imports.users(user_id)
+);
+_______________________________________________________________________________________________________
+
+
+-- p2
+INSERT INTO LibraryManagement.authors (author_name) VALUES 
+('Джонни Синс'),
+('Брэнди Лав'),
+('Лана Роудс'),
+('Эльза Джин'),
+('Райли Рид'),
+('Кристофер Нолан');
+
+INSERT INTO LibraryManagement.genres (genre_name) VALUES 
+('Фантастика'),
+('Романтика'),
+('Драма'),
+('Комедия'),
+('Документалистика'),
+('Научная фантастика');
+
+INSERT INTO LibraryManagement.books (title, publication_year, author_id, genre_id) VALUES 
+('Профессионал во всём', 2023, 1, 1),
+('Любовь без границ', 2022, 2, 2),
+('Секреты успеха', 2021, 3, 3),
+('Голубоглазая тайна', 2020, 4, 4),
+('Весёлые приключения', 2019, 5, 5),
+('Начало', 2010, 6, 6);
+
+INSERT INTO LibraryManagement.users (username, email) VALUES 
+('mike_tyson', 'mike.tyson@example.com'),
+('dwayne_johnson', 'therock@studiofanmail.com');
+
+INSERT INTO LibraryManagement.borrowed_books (book_id, user_id, borrow_date, return_date) VALUES 
+(6, 2, '2025-03-01', '2025-03-10'),
+(1, 1, '2025-03-02', NULL);
+_______________________________________________________________________________________________________
+
+-- p3
+SELECT 
+    goit_csv_imports.orders.id AS order_id,
+    goit_csv_imports.orders.date AS order_date,
+    goit_csv_imports.customers.id AS customer_id,
+    goit_csv_imports.customers.name AS customer_name,
+    goit_csv_imports.employees.employee_id,
+    goit_csv_imports.employees.first_name AS employee_first_name,
+    goit_csv_imports.employees.last_name AS employee_last_name,
+    goit_csv_imports.shippers.id AS shipper_id,
+    goit_csv_imports.shippers.name AS shipper_name,
+    goit_csv_imports.order_details.product_id,
+    goit_csv_imports.products.name AS product_name,
+    goit_csv_imports.categories.id AS category_id,
+    goit_csv_imports.categories.name AS category_name,
+    goit_csv_imports.suppliers.id AS supplier_id,
+    goit_csv_imports.suppliers.name AS supplier_name,
+    goit_csv_imports.order_details.quantity,
+    goit_csv_imports.products.price AS unit_price
+FROM goit_csv_imports.orders
+INNER JOIN goit_csv_imports.customers 
+    ON goit_csv_imports.orders.customer_id = goit_csv_imports.customers.id
+INNER JOIN goit_csv_imports.employees 
+    ON goit_csv_imports.orders.employee_id = goit_csv_imports.employees.employee_id
+INNER JOIN goit_csv_imports.shippers 
+    ON goit_csv_imports.orders.shipper_id = goit_csv_imports.shippers.id
+INNER JOIN goit_csv_imports.order_details 
+    ON goit_csv_imports.orders.id = goit_csv_imports.order_details.order_id
+INNER JOIN goit_csv_imports.products 
+    ON goit_csv_imports.order_details.product_id = goit_csv_imports.products.id
+INNER JOIN goit_csv_imports.categories 
+    ON goit_csv_imports.products.category_id = goit_csv_imports.categories.id
+INNER JOIN goit_csv_imports.suppliers 
+    ON goit_csv_imports.products.supplier_id = goit_csv_imports.suppliers.id;
+_______________________________________________________________________________________________________
+
+
+-- p4_1
+SELECT COUNT(*) AS total_rows
+FROM goit_csv_imports.orders
+INNER JOIN goit_csv_imports.customers ON goit_csv_imports.orders.customer_id = goit_csv_imports.customers.id
+INNER JOIN goit_csv_imports.employees ON goit_csv_imports.orders.employee_id = goit_csv_imports.employees.employee_id
+INNER JOIN goit_csv_imports.shippers ON goit_csv_imports.orders.shipper_id = goit_csv_imports.shippers.id
+INNER JOIN goit_csv_imports.order_details ON goit_csv_imports.orders.id = goit_csv_imports.order_details.order_id
+INNER JOIN goit_csv_imports.products ON goit_csv_imports.order_details.product_id = goit_csv_imports.products.id
+INNER JOIN goit_csv_imports.categories ON goit_csv_imports.products.category_id = goit_csv_imports.categories.id
+INNER JOIN goit_csv_imports.suppliers ON goit_csv_imports.products.supplier_id = goit_csv_imports.suppliers.id;
+
+
+
+
+-- p4_2
+SELECT COUNT(*) AS total_rows
+FROM goit_csv_imports.orders
+LEFT JOIN goit_csv_imports.customers ON goit_csv_imports.orders.customer_id = goit_csv_imports.customers.id
+INNER JOIN goit_csv_imports.employees ON goit_csv_imports.orders.employee_id = goit_csv_imports.employees.employee_id
+LEFT JOIN goit_csv_imports.shippers ON goit_csv_imports.orders.shipper_id = goit_csv_imports.shippers.id
+INNER JOIN goit_csv_imports.order_details ON goit_csv_imports.orders.id = goit_csv_imports.order_details.order_id
+LEFT JOIN goit_csv_imports.products ON goit_csv_imports.order_details.product_id = goit_csv_imports.products.id
+LEFT JOIN goit_csv_imports.categories ON goit_csv_imports.products.category_id = goit_csv_imports.categories.id
+INNER JOIN goit_csv_imports.suppliers ON goit_csv_imports.products.supplier_id = goit_csv_imports.suppliers.id;
+
+ВИСНОВОК до p4_2: 
+Для заданої бази даних використання INNER JOIN (p4_1) та комбінації INNER JOIN з LEFT JOIN (p4_2) дало однакову кількість рядків (518). Це означає, що всі записи у лівих таблицях мали відповідники у правих таблицях, тому LEFT JOIN не додав додаткових рядків із NULL-значеннями.
+Зміна INNER JOIN на LEFT JOIN зазвичай призводить до збільшення кількості рядків, якщо в правій таблиці є записи без відповідників у лівій. Однак у цій базі даних таких "відірваних" записів немає, тому результати залишилися незмінними.
+У цьому запиті таблиця orders була обрана як основна, оскільки вона є ключовою у структурі даних:
+- Вона містить список замовлень, які є центральною сутністю для аналізу.
+- До кожного замовлення можна приєднати клієнта (customers), працівника (employees), доставника (shippers), а також деталі замовлення (order_details).
+- Далі через order_details можна отримати товари (products), а від них — категорії (categories) та постачальників (suppliers).
+- Це логічний вибір, оскільки кожен запис у orders може бути пов'язаний з кількома іншими таблицями, і саме замовлення є основним об'єктом аналізу в цьому випадку.
+
+
+
+-- p4_3
+SELECT *
+FROM goit_csv_imports.orders
+INNER JOIN goit_csv_imports.employees ON goit_csv_imports.orders.employee_id = goit_csv_imports.employees.employee_id
+WHERE goit_csv_imports.employees.employee_id > 3 AND goit_csv_imports.employees.employee_id <= 10;
+
+-- p4_4
+SELECT 
+    goit_csv_imports.categories.name AS category_name,
+    COUNT(*) AS total_orders,
+    AVG(goit_csv_imports.order_details.quantity) AS avg_quantity
+FROM goit_csv_imports.orders
+INNER JOIN goit_csv_imports.order_details ON goit_csv_imports.orders.id = goit_csv_imports.order_details.order_id
+INNER JOIN goit_csv_imports.products ON goit_csv_imports.order_details.product_id = goit_csv_imports.products.id
+INNER JOIN goit_csv_imports.categories ON goit_csv_imports.products.category_id = goit_csv_imports.categories.id
+GROUP BY goit_csv_imports.categories.name;
+
+-- p4_5
+SELECT 
+    goit_csv_imports.categories.name AS category_name,
+    COUNT(*) AS total_orders,
+    AVG(goit_csv_imports.order_details.quantity) AS avg_quantity
+FROM goit_csv_imports.orders
+INNER JOIN goit_csv_imports.order_details ON goit_csv_imports.orders.id = goit_csv_imports.order_details.order_id
+INNER JOIN goit_csv_imports.products ON goit_csv_imports.order_details.product_id = goit_csv_imports.products.id
+INNER JOIN goit_csv_imports.categories ON goit_csv_imports.products.category_id = goit_csv_imports.categories.id
+GROUP BY goit_csv_imports.categories.name
+HAVING avg_quantity > 21;
+
+-- p4_6
+SELECT 
+    goit_csv_imports.categories.name AS category_name,
+    COUNT(*) AS total_orders,
+    AVG(goit_csv_imports.order_details.quantity) AS avg_quantity
+FROM goit_csv_imports.orders
+INNER JOIN goit_csv_imports.order_details ON goit_csv_imports.orders.id = goit_csv_imports.order_details.order_id
+INNER JOIN goit_csv_imports.products ON goit_csv_imports.order_details.product_id = goit_csv_imports.products.id
+INNER JOIN goit_csv_imports.categories ON goit_csv_imports.products.category_id = goit_csv_imports.categories.id
+GROUP BY goit_csv_imports.categories.name
+HAVING avg_quantity > 21
+ORDER BY total_orders DESC;
+
+-- p4_7
+SELECT 
+    goit_csv_imports.categories.name AS category_name,
+    COUNT(*) AS total_orders,
+    AVG(goit_csv_imports.order_details.quantity) AS avg_quantity
+FROM goit_csv_imports.orders
+INNER JOIN goit_csv_imports.order_details ON goit_csv_imports.orders.id = goit_csv_imports.order_details.order_id
+INNER JOIN goit_csv_imports.products ON goit_csv_imports.order_details.product_id = goit_csv_imports.products.id
+INNER JOIN goit_csv_imports.categories ON goit_csv_imports.products.category_id = goit_csv_imports.categories.id
+GROUP BY goit_csv_imports.categories.name
+HAVING avg_quantity > 21
+ORDER BY total_orders DESC
+LIMIT 4 OFFSET 1;
+
